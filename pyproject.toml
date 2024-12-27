@@ -11,7 +11,7 @@ classifiers = [
 ]
 authors = [{ name = 'Michaël Petrov', email = 'smartptr@gmail.com' }]
 dependencies = ['mido', 'evdev']
-license = { file = "LICENSE" }
+license = { file = "LICENSE.md" }
 
 [project.urls]
 Homepage = 'https://github.com/parametalol/midi-keyboard'
