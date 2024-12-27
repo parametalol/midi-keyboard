@@ -16,22 +16,25 @@ CONTROL_PEDAL_SOFT = 66
 
 
 class Mapper:
-    def __init__(self, mapping):
+    def __init__(self, mapping, port_name=None):
         self.ui = UInput()
         self.mapping = mapping
-        self.midi, _output = midiutil.open_midiinput(use_virtual=False, interactive=True, client_name='midi-keyboard')
+        self.midi, _output = midiutil.open_midiinput(
+            port=port_name, use_virtual=False, interactive=True, client_name='midi-keyboard'
+        )
 
     def _key_press(self, key):
         self.ui.write(e.EV_KEY, key, EV_KEY_DOWN)
         self.ui.write(e.EV_KEY, key, EV_KEY_UP)
         self.ui.syn()
 
+    def _midi_event(self, ch, note, velocity):
+        if ch == MIDI_CONTROL and velocity == MIDI_VALUE_PUSH and note in self.mapping:
+            self._key_press(self.mapping[note])
+
     def run(self):
         def cbk(msg_delta, self: Mapper):
-            msg, _delta = msg_delta
-            ch, note, velocity = msg
-            if ch == MIDI_CONTROL and velocity == MIDI_VALUE_PUSH and note in self.mapping:
-                self._key_press(self.mapping[note])
+            self._midi_event(*msg_delta[0])
 
         self.midi.set_callback(cbk, self)
         input()
