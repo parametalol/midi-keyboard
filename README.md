@@ -3,17 +3,21 @@
 The hardcoded mapping translates the Una Corda (Soft) and Sostenuto (Sustain) pedal pushes to Page Up and Page Down events accordingly.
 
 ## Requirements
-* Python
-* mido
+
+* Python3
+* python-rtmidi
 * evdev
 
 ## Usage
 
 ```console
-sh$ python pedals.py 
-Available MIDI Input Ports:
-1. Midi Through:Midi Through Port-0 14:0
-2. Clavinova:Clavinova MIDI 1 32:0
-Select the port: 2
-^C
+sh$ midi-keyboard
+Do you want to create a virtual MIDI input port? (y/N) N
+Available MIDI ports:
+
+[0] Midi Through:Midi Through Port-0 14:0
+[1] Clavinova:Clavinova MIDI 1 32:0
+
+Select MIDI input port (Control-C to exit): 1
+^C⏎
 ```
