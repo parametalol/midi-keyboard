@@ -1,2 +1,2 @@
-mido
 evdev
+python-rtmidi

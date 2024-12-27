@@ -6,11 +6,11 @@ requires-python = '>=3.9,<4.0'
 dynamic = ['version']
 classifiers = [
     'Programming Language :: Python :: 3',
-    'License :: OSI Approved :: MIT License',
-    'Operating System :: OS Independent',
+    'Operating System :: POSIX :: Linux',
+    'Topic :: Multimedia :: Sound/Audio :: MIDI'
 ]
 authors = [{ name = 'Michaël Petrov', email = 'smartptr@gmail.com' }]
-dependencies = ['mido', 'evdev']
+dependencies = ['python-rtmidi', 'evdev']
 license = { file = "LICENSE.md" }
 
 [project.urls]
@@ -75,4 +75,4 @@ max-args = 8
 inline-quotes = 'single'
 
 [project.scripts]
-cgpt = 'midi_keyboard.__main__:main'
+midi-keyboard = 'midi_keyboard.__main__:main'

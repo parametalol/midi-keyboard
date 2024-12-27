@@ -1,13 +1,14 @@
 import contextlib
 import sys
 
-import mido
 from evdev import UInput
 from evdev import ecodes as e
+from rtmidi import midiutil
 
-VALUE_PUSH = 127
-KEY_DOWN = 1
-KEY_UP = 0
+MIDI_CONTROL = 176
+MIDI_VALUE_PUSH = 127
+EV_KEY_DOWN = 1
+EV_KEY_UP = 0
 
 
 CONTROL_PEDAL_SOSTENUTO = 67
@@ -15,44 +16,33 @@ CONTROL_PEDAL_SOFT = 66
 
 
 class Mapper:
-    def __init__(self, midi_input_name, mapping):
+    def __init__(self, mapping):
         self.ui = UInput()
         self.mapping = mapping
-        self.midi_port = mido.open_input(midi_input_name)
+        self.midi, _output = midiutil.open_midiinput(use_virtual=False, interactive=True, client_name='midi-keyboard')
 
     def _key_press(self, key):
-        self.ui.write(e.EV_KEY, key, KEY_DOWN)
-        self.ui.write(e.EV_KEY, key, KEY_UP)
+        self.ui.write(e.EV_KEY, key, EV_KEY_DOWN)
+        self.ui.write(e.EV_KEY, key, EV_KEY_UP)
         self.ui.syn()
 
     def run(self):
-        while True:
-            for msg in self.midi_port.iter_pending():
-                if msg.type == 'control_change' and msg.value == VALUE_PUSH and msg.control in self.mapping:
-                    self._key_press(self.mapping[msg.control])
+        def cbk(msg_delta, self: Mapper):
+            msg, _delta = msg_delta
+            ch, note, velocity = msg
+            if ch == MIDI_CONTROL and velocity == MIDI_VALUE_PUSH and note in self.mapping:
+                self._key_press(self.mapping[note])
+
+        self.midi.set_callback(cbk, self)
+        input()
 
     def stop(self):
-        self.midi_port.close()
+        self.midi.close_port()
         self.ui.close()
 
 
-def select_midi_port():
-    print('Available MIDI Input Ports:')
-    ports = mido.get_input_names()
-    for i, port in enumerate(ports):
-        print(f'{i+1}. {port}')
-
-    n = 0
-    while not (0 < n <= len(ports)):
-        with contextlib.suppress(ValueError):
-            n = int(input('Select the port: '))
-
-    return ports[n - 1]
-
-
-def main():
+def main() -> int:
     m = Mapper(
-        select_midi_port(),
         {CONTROL_PEDAL_SOSTENUTO: e.KEY_PAGEUP, CONTROL_PEDAL_SOFT: e.KEY_PAGEDOWN},
     )
     with contextlib.suppress(KeyboardInterrupt):
