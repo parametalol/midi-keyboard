@@ -50,7 +50,7 @@ def select_midi_port():
     return ports[n - 1]
 
 
-if __name__ == '__main__':
+def main():
     m = Mapper(
         select_midi_port(),
         {CONTROL_PEDAL_SOSTENUTO: e.KEY_PAGEUP, CONTROL_PEDAL_SOFT: e.KEY_PAGEDOWN},
@@ -58,4 +58,8 @@ if __name__ == '__main__':
     with contextlib.suppress(KeyboardInterrupt):
         m.run()
     m.stop()
-    sys.exit(0)
+    return 0
+
+
+if __name__ == '__main__':
+    sys.exit(main())
