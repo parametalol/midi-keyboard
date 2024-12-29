@@ -1,6 +1,6 @@
 # MIDI to Keyboard event mapper
 
-The hardcoded mapping translates the Una Corda (Soft) and Sostenuto (Sustain) pedal pushes to Page Up and Page Down events accordingly.
+The hardcoded mapping translates the Soft and Sostenuto pedal pushes to Page Up and Page Down events accordingly.
 
 ## Requirements
 
