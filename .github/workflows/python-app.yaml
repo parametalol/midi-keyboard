@@ -29,4 +29,4 @@ jobs:
           ruff check src
       - name: Check vermin
         run: |
-          vermin -vvvv --eval-annotations -t=3.9 --no-tips --no-parse-comments src
+          vermin -vvvv --eval-annotations -t=3.4 --no-tips --no-parse-comments src
